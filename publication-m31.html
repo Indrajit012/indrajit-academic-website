@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The fine structure of the mean magnetic field in M31 — Indrajit Paul</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0F1428;
+    --panel:#161C38;
+    --panel-2:#1E2547;
+    --fg:#E9E6DD;
+    --fg-muted:#8890AC;
+    --field-accent:#D9BE8A;
+    --field-gold:#E8B04B;
+    --line: rgba(233,230,221,0.10);
+    --maxw: 800px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--fg);
+    font-family:'Inter', sans-serif;
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:'Fraunces', serif; font-weight:600; margin:0; letter-spacing:-0.01em;}
+  a{color:var(--field-accent);}
+  a:focus-visible{outline:2px solid var(--field-gold); outline-offset:3px;}
+  .mono{font-family:'IBM Plex Mono', monospace;}
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 24px;}
+  section{padding:64px 0;}
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace; font-size:0.72rem; letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--field-accent); display:block; margin-bottom:10px;
+  }
+
+  /* TOPBAR */
+  .topbar{
+    position:sticky; top:0; z-index:20;
+    backdrop-filter:blur(10px);
+    background:rgba(15,20,40,0.85);
+    border-bottom:1px solid var(--line);
+    padding:16px 0;
+  }
+  .topbar .wrap{display:flex; align-items:center; justify-content:space-between;}
+  .back-link{
+    font-family:'IBM Plex Mono', monospace; font-size:0.82rem;
+    color:var(--fg-muted); text-decoration:none; display:inline-flex; align-items:center; gap:8px;
+  }
+  .back-link:hover{color:var(--field-accent);}
+  .topbar .brand{font-family:'Fraunces', serif; font-size:0.95rem; color:var(--fg);}
+  .topbar .brand span{color:var(--field-accent);}
+
+  /* HERO */
+  .hero{
+    position:relative; min-height:56vh; display:flex; align-items:flex-end;
+    overflow:hidden;
+    background:
+      linear-gradient(180deg, rgba(15,20,40,0.35) 0%, rgba(15,20,40,0.55) 55%, var(--ink) 100%),
+      var(--ink) url('m31-figure.jpg') center 30% / cover no-repeat;
+  }
+  .hero-inner{position:relative; z-index:2; padding-bottom:48px; width:100%;}
+  .hero h1{font-size:clamp(1.9rem, 4.6vw, 2.7rem); line-height:1.12; color:var(--fg); max-width:680px;}
+  .hero .byline{margin-top:16px; color:var(--fg-muted); font-size:0.95rem;}
+  .hero .byline strong{color:var(--fg); font-weight:600;}
+  .hero .venue{margin-top:4px; color:var(--fg-muted); font-size:0.92rem; font-style:italic;}
+  .hero-cta{margin-top:26px; display:flex; flex-wrap:wrap; gap:14px;}
+  .btn{
+    font-family:'IBM Plex Mono', monospace; font-size:0.8rem; padding:10px 18px; border-radius:3px;
+    border:1px solid var(--line); color:var(--fg); display:inline-flex; align-items:center; gap:8px;
+    text-decoration:none; transition:border-color .15s ease, background .15s ease;
+  }
+  .btn:hover{border-color:var(--field-accent); background:rgba(217,190,138,0.08);}
+  .btn.primary{background:var(--field-accent); border-color:var(--field-accent); color:var(--ink); font-weight:500;}
+  .btn.primary:hover{background:#e6cda0;}
+
+  /* ABSTRACT */
+  #abstract p{color:var(--fg-muted); font-size:1.03rem;}
+  #abstract p strong{color:var(--fg); font-weight:600;}
+
+  /* STAT GRID */
+  .stat-grid{
+    display:grid; grid-template-columns:repeat(4, 1fr); gap:1px;
+    background:var(--line); border:1px solid var(--line); border-radius:4px; overflow:hidden;
+  }
+  .stat{background:var(--panel); padding:22px 16px; text-align:center;}
+  .stat .num{font-family:'Fraunces', serif; font-size:1.5rem; color:var(--field-accent); display:block;}
+  .stat .lbl{font-family:'IBM Plex Mono', monospace; font-size:0.68rem; color:var(--fg-muted); text-transform:uppercase; letter-spacing:0.06em; margin-top:6px; display:block;}
+
+  /* DATA TABLE */
+  #data{background:var(--panel); border-top:1px solid var(--line); border-bottom:1px solid var(--line);}
+  table{width:100%; border-collapse:collapse; margin-top:8px; font-size:0.88rem;}
+  th, td{text-align:left; padding:10px 12px; border-bottom:1px solid var(--line);}
+  th{font-family:'IBM Plex Mono', monospace; font-size:0.68rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--fg-muted); font-weight:500;}
+  td{color:var(--fg);}
+  td.mono{color:var(--field-accent);}
+
+  /* METHOD STEPS */
+  .step{display:grid; grid-template-columns:44px 1fr; gap:18px; padding:20px 0; border-bottom:1px solid var(--line);}
+  .step:last-child{border-bottom:none;}
+  .step-num{font-family:'IBM Plex Mono', monospace; color:var(--field-gold); font-size:0.85rem; padding-top:2px;}
+  .step h3{font-family:'Inter', sans-serif; font-weight:600; font-size:1rem; color:var(--fg); margin-bottom:5px;}
+  .step p{margin:0; color:var(--fg-muted); font-size:0.92rem;}
+
+  /* PULL QUOTE */
+  .pull{
+    border-left:2px solid var(--field-accent);
+    padding:4px 0 4px 22px;
+    margin:28px 0;
+    font-family:'Fraunces', serif;
+    font-size:1.15rem;
+    font-style:italic;
+    color:var(--fg);
+    line-height:1.5;
+  }
+
+  /* RESULTS LIST */
+  .result-list{list-style:none; margin:0; padding:0;}
+  .result-list li{
+    position:relative; padding:14px 0 14px 26px; border-bottom:1px solid var(--line); color:var(--fg-muted); font-size:0.95rem;
+  }
+  .result-list li:last-child{border-bottom:none;}
+  .result-list li::before{content:'→'; position:absolute; left:0; color:var(--field-gold); font-family:'IBM Plex Mono', monospace;}
+  .result-list li strong{color:var(--fg); font-weight:600;}
+
+  /* FOOTER */
+  footer{padding:60px 0 70px; border-top:1px solid var(--line);}
+  footer p{color:var(--fg-muted); font-size:0.95rem; max-width:520px;}
+  .foot-cta{margin-top:24px; display:flex; flex-wrap:wrap; gap:14px;}
+
+  @media (max-width:700px){
+    .stat-grid{grid-template-columns:repeat(2, 1fr);}
+    table{font-size:0.8rem;}
+    th, td{padding:8px 6px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap">
+    <a class="back-link" href="indrajit-paul-website.html">&larr; Back to site</a>
+    <div class="brand">Indrajit <span>Paul</span></div>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap hero-inner">
+    <span class="eyebrow">Publication · MNRAS 545(2), staf2041 · 2025</span>
+    <h1>The fine structure of the mean magnetic field in M31</h1>
+    <p class="byline"><strong>Paul, I.</strong>, Kashyap, R. V., Ghosh, T., Beck, R., Chamandy, L., Sinha, S., Shukurov, A.</p>
+    <p class="venue">Monthly Notices of the Royal Astronomical Society, 545(2), staf2041 (2025)</p>
+    <div class="hero-cta">
+      <a class="btn primary" href="https://doi.org/10.1093/mnras/staf2041" target="_blank" rel="noopener">Read the paper ↗</a>
+      <a class="btn" href="indrajit-paul-website.html#publications">All publications</a>
+    </div>
+  </div>
+</header>
+
+<section id="abstract">
+  <div class="wrap">
+    <span class="eyebrow">Overview</span>
+    <h2 style="font-size:1.6rem; margin-bottom:20px;">Reading a galaxy's magnetism from its polarised light</h2>
+    <p>Magnetic fields are woven through the Universe at every scale — from the Earth's core to the diffuse gas between galaxies. On galactic scales, <strong>spiral galaxies like the Milky Way and M31 host coherent magnetic fields of a few microgauss</strong>, threading tens of kiloparsecs across their disks. Though far weaker than the fields around stars or planets, their energy is comparable to that of turbulent gas and cosmic rays — making them a genuinely dynamical ingredient of a galaxy's structure, not just a passive trace.</p>
+    <p style="margin-top:16px;">This paper focuses on <strong>M31, the Andromeda Galaxy</strong> — the nearest large spiral to our own, and the closest well-resolved laboratory we have for testing how these galactic-scale magnetic fields are generated and shaped. We revisit its magnetic field using a <strong>Bayesian Monte Carlo fitting approach</strong>, extending the classical Fourier-mode picture of the field to higher order and placing it on a statistically rigorous footing for the first time.</p>
+  </div>
+</section>
+
+<section id="stats">
+  <div class="wrap">
+    <span class="eyebrow">Why M31</span>
+    <div class="stat-grid">
+      <div class="stat"><span class="num">780 kpc</span><span class="lbl">Distance</span></div>
+      <div class="stat"><span class="num">28.5 kpc</span><span class="lbl">Optical radius</span></div>
+      <div class="stat"><span class="num">75°</span><span class="lbl">Inclination</span></div>
+      <div class="stat"><span class="num">5–10 μG</span><span class="lbl">Field strength</span></div>
+    </div>
+    <p style="color:var(--fg-muted); font-size:0.9rem; margin-top:18px;">M31 is the largest member of the Local Group — an SA(s)b-type spiral with over a trillion stars, extensively mapped across the electromagnetic spectrum. Its size, proximity, and well-characterised regular magnetic field make it a long-standing benchmark for testing galactic dynamo theory.</p>
+  </div>
+</section>
+
+<section id="data">
+  <div class="wrap">
+    <span class="eyebrow">Observational data</span>
+    <h2 style="font-size:1.6rem; margin-bottom:16px;">Four wavelengths, one field</h2>
+    <p style="color:var(--fg-muted); font-size:0.92rem;">The analysis combines radio continuum polarisation observations from the Effelsberg 100-m telescope and archival VLA data, spanning four wavelengths to disentangle the magnetic field geometry from Faraday rotation and depolarisation effects.</p>
+    <table>
+      <thead>
+        <tr><th>Wavelength</th><th>Frequency</th><th>Telescope</th><th>Resolution</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="mono">3.59 cm</td><td>8.35 GHz</td><td>Effelsberg</td><td>3.0′</td></tr>
+        <tr><td class="mono">6.18 cm</td><td>4.85 GHz</td><td>Effelsberg</td><td>3.0′</td></tr>
+        <tr><td class="mono">11.33 cm</td><td>2.65 GHz</td><td>Effelsberg</td><td>4.4′</td></tr>
+        <tr><td class="mono">20.46 cm</td><td>1.46 GHz</td><td>VLA + Effelsberg</td><td>45″</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="method">
+  <div class="wrap">
+    <span class="eyebrow">Method</span>
+    <h2 style="font-size:1.6rem; margin-bottom:8px;">A Bayesian approach to an old picture</h2>
+    <div class="step">
+      <div class="step-num mono">01</div>
+      <div>
+        <h3>Fourier-mode decomposition</h3>
+        <p>The regular magnetic field is expressed as a sum of Fourier modes (m = 0, 1, 2, 3...) in galactocentric azimuth — the standard language for describing dynamo-generated fields, where the axisymmetric m = 0 mode represents the dominant spiral pattern.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num mono">02</div>
+      <div>
+        <h3>MCMC fitting across four radial rings</h3>
+        <p>Rather than a single χ²-based fit, a Bayesian Monte Carlo procedure is applied independently to four radial rings (6–8, 8–10, 10–12, 12–14 kpc), returning full posterior distributions and honest parameter uncertainties instead of single best-fit values.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num mono">03</div>
+      <div>
+        <h3>Modelling Faraday rotation and depolarisation</h3>
+        <p>Two phenomenological depolarisation parameters account for the effective loss of polarised signal at longer wavelengths, avoiding uncertain assumptions about the turbulent magneto-ionic medium while still reproducing the observed polarisation angles.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="results">
+  <div class="wrap">
+    <span class="eyebrow">Results</span>
+    <h2 style="font-size:1.6rem; margin-bottom:20px;">A predominantly axisymmetric field, with fine structure on top</h2>
+    <div class="pull">"The regular magnetic field of M31 is predominantly axisymmetric, with a coherent trailing spiral geometry consistent with mean-field dynamo theory."</div>
+    <ul class="result-list">
+      <li>MCMC chains <strong>converge to unique, well-defined solutions</strong> for every radial ring (Gelman–Rubin R − 1 &lt; 0.01), with no significant degeneracies between parameters.</li>
+      <li>Normalised residuals between observed and modelled polarisation angles stay close to <strong>1σ or better across all four rings</strong> (RMS values of 1.10, 0.99, 0.87, 0.81), showing the model captures the dominant field structure well.</li>
+      <li>Higher-order Fourier modes (m = 1–4) are needed to reproduce <strong>localised departures from axial symmetry</strong> — but remain comparatively weak, likely tracing local perturbations rather than independent dynamo modes.</li>
+      <li>The magnetic field strength inferred independently from Faraday rotation measures is <strong>consistent with recent literature</strong>, offering a more direct estimate of the coherent field than polarised-intensity methods alone.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="significance">
+  <div class="wrap">
+    <span class="eyebrow">Why it matters</span>
+    <h2 style="font-size:1.6rem; margin-bottom:16px;">A framework beyond M31</h2>
+    <p style="color:var(--fg-muted); font-size:0.98rem;">Beyond the specific result for M31, this work establishes a <strong style="color:var(--fg);">general Bayesian methodology</strong> for inferring the regular magnetic field orientation, pitch angle, and strength of nearby spiral galaxies directly from multi-frequency polarisation data — while simultaneously accounting for Faraday rotation and depolarisation. The same framework is applied next to <strong style="color:var(--fg);">IC 342</strong>, providing a statistically consistent basis for comparing magnetic field properties across different galactic environments.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span class="eyebrow">Continue reading</span>
+    <p>The full analysis — including the complete Fourier-mode framework, validation on simulated data, and the extended discussion of physical interpretation — is available in the published paper and in Chapter 3 of my Ph.D. thesis.</p>
+    <div class="foot-cta">
+      <a class="btn primary" href="https://doi.org/10.1093/mnras/staf2041" target="_blank" rel="noopener">Read the paper ↗</a>
+      <a class="btn" href="indrajit-paul-website.html#publications">← Back to publications</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

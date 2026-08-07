@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Magnetic field structure in IC 342 — Indrajit Paul</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0F1428;
+    --panel:#161C38;
+    --panel-2:#1E2547;
+    --fg:#E9E6DD;
+    --fg-muted:#8890AC;
+    --field-accent:#D9BE8A;
+    --field-gold:#E8B04B;
+    --line: rgba(233,230,221,0.10);
+    --maxw: 800px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--fg);
+    font-family:'Inter', sans-serif;
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:'Fraunces', serif; font-weight:600; margin:0; letter-spacing:-0.01em;}
+  a{color:var(--field-accent);}
+  a:focus-visible{outline:2px solid var(--field-gold); outline-offset:3px;}
+  .mono{font-family:'IBM Plex Mono', monospace;}
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 24px;}
+  section{padding:64px 0;}
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace; font-size:0.72rem; letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--field-accent); display:block; margin-bottom:10px;
+  }
+
+  /* TOPBAR */
+  .topbar{
+    position:sticky; top:0; z-index:20;
+    backdrop-filter:blur(10px);
+    background:rgba(15,20,40,0.85);
+    border-bottom:1px solid var(--line);
+    padding:16px 0;
+  }
+  .topbar .wrap{display:flex; align-items:center; justify-content:space-between;}
+  .back-link{
+    font-family:'IBM Plex Mono', monospace; font-size:0.82rem;
+    color:var(--fg-muted); text-decoration:none; display:inline-flex; align-items:center; gap:8px;
+  }
+  .back-link:hover{color:var(--field-accent);}
+  .topbar .brand{font-family:'Fraunces', serif; font-size:0.95rem; color:var(--fg);}
+  .topbar .brand span{color:var(--field-accent);}
+
+  /* HERO */
+  .hero{
+    position:relative; min-height:56vh; display:flex; align-items:flex-end;
+    overflow:hidden;
+    background:
+      linear-gradient(180deg, rgba(15,20,40,0.35) 0%, rgba(15,20,40,0.55) 55%, var(--ink) 100%),
+      var(--ink) url('ic342-figure.jpg') center 40% / cover no-repeat;
+  }
+  .hero-inner{position:relative; z-index:2; padding-bottom:48px; width:100%;}
+  .hero h1{font-size:clamp(1.9rem, 4.6vw, 2.7rem); line-height:1.12; color:var(--fg); max-width:680px;}
+  .hero .byline{margin-top:16px; color:var(--fg-muted); font-size:0.95rem;}
+  .hero .byline strong{color:var(--fg); font-weight:600;}
+  .hero .venue{margin-top:4px; color:var(--fg-muted); font-size:0.92rem; font-style:italic;}
+  .hero-cta{margin-top:26px; display:flex; flex-wrap:wrap; gap:14px;}
+  .btn{
+    font-family:'IBM Plex Mono', monospace; font-size:0.8rem; padding:10px 18px; border-radius:3px;
+    border:1px solid var(--line); color:var(--fg); display:inline-flex; align-items:center; gap:8px;
+    text-decoration:none; transition:border-color .15s ease, background .15s ease;
+  }
+  .btn:hover{border-color:var(--field-accent); background:rgba(217,190,138,0.08);}
+  .btn.primary{background:var(--field-accent); border-color:var(--field-accent); color:var(--ink); font-weight:500;}
+  .btn.primary:hover{background:#e6cda0;}
+
+  /* ABSTRACT */
+  #abstract p{color:var(--fg-muted); font-size:1.03rem;}
+  #abstract p strong{color:var(--fg); font-weight:600;}
+
+  /* STAT GRID */
+  .stat-grid{
+    display:grid; grid-template-columns:repeat(4, 1fr); gap:1px;
+    background:var(--line); border:1px solid var(--line); border-radius:4px; overflow:hidden;
+  }
+  .stat{background:var(--panel); padding:22px 16px; text-align:center;}
+  .stat .num{font-family:'Fraunces', serif; font-size:1.5rem; color:var(--field-accent); display:block;}
+  .stat .lbl{font-family:'IBM Plex Mono', monospace; font-size:0.68rem; color:var(--fg-muted); text-transform:uppercase; letter-spacing:0.06em; margin-top:6px; display:block;}
+
+  /* DATA TABLE */
+  #data{background:var(--panel); border-top:1px solid var(--line); border-bottom:1px solid var(--line);}
+  table{width:100%; border-collapse:collapse; margin-top:8px; font-size:0.88rem;}
+  th, td{text-align:left; padding:10px 12px; border-bottom:1px solid var(--line);}
+  th{font-family:'IBM Plex Mono', monospace; font-size:0.68rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--fg-muted); font-weight:500;}
+  td{color:var(--fg);}
+  td.mono{color:var(--field-accent);}
+
+  /* METHOD STEPS */
+  .step{display:grid; grid-template-columns:44px 1fr; gap:18px; padding:20px 0; border-bottom:1px solid var(--line);}
+  .step:last-child{border-bottom:none;}
+  .step-num{font-family:'IBM Plex Mono', monospace; color:var(--field-gold); font-size:0.85rem; padding-top:2px;}
+  .step h3{font-family:'Inter', sans-serif; font-weight:600; font-size:1rem; color:var(--fg); margin-bottom:5px;}
+  .step p{margin:0; color:var(--fg-muted); font-size:0.92rem;}
+
+  /* PULL QUOTE */
+  .pull{
+    border-left:2px solid var(--field-accent);
+    padding:4px 0 4px 22px;
+    margin:28px 0;
+    font-family:'Fraunces', serif;
+    font-size:1.15rem;
+    font-style:italic;
+    color:var(--fg);
+    line-height:1.5;
+  }
+
+  /* RESULTS LIST */
+  .result-list{list-style:none; margin:0; padding:0;}
+  .result-list li{
+    position:relative; padding:14px 0 14px 26px; border-bottom:1px solid var(--line); color:var(--fg-muted); font-size:0.95rem;
+  }
+  .result-list li:last-child{border-bottom:none;}
+  .result-list li::before{content:'→'; position:absolute; left:0; color:var(--field-gold); font-family:'IBM Plex Mono', monospace;}
+  .result-list li strong{color:var(--fg); font-weight:600;}
+
+  /* FOOTER */
+  footer{padding:60px 0 70px; border-top:1px solid var(--line);}
+  footer p{color:var(--fg-muted); font-size:0.95rem; max-width:520px;}
+  .foot-cta{margin-top:24px; display:flex; flex-wrap:wrap; gap:14px;}
+
+  @media (max-width:700px){
+    .stat-grid{grid-template-columns:repeat(2, 1fr);}
+    table{font-size:0.8rem;}
+    th, td{padding:8px 6px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap">
+    <a class="back-link" href="indrajit-paul-website.html">&larr; Back to site</a>
+    <div class="brand">Indrajit <span>Paul</span></div>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap hero-inner">
+    <span class="eyebrow">Publication · In preparation</span>
+    <h1>Magnetic field structure in IC 342</h1>
+    <p class="byline"><strong>Paul, I.</strong>, Gogoi, A. S., Kashyap, R. V., Ghosh, T., Beck, R., Chamandy, L., Sinha, S., Shukurov, A.</p>
+    <p class="venue">Manuscript in preparation</p>
+    <div class="hero-cta">
+      <a class="btn" href="indrajit-paul-website.html#publications">All publications</a>
+    </div>
+  </div>
+</header>
+
+<section id="abstract">
+  <div class="wrap">
+    <span class="eyebrow">Overview</span>
+    <h2 style="font-size:1.6rem; margin-bottom:20px;">The "Hidden Galaxy," unveiled in radio</h2>
+    <p><strong>IC 342</strong> is a nearby, low-inclination, grand-design spiral galaxy that — together with the elliptical galaxy Maffei 1 — dominates one of the galaxy groups closest to our own Local Group. Despite lying among the nearest large spirals to the Milky Way, it is heavily dimmed and reddened by dust in our own Galactic plane, earning it the nickname <strong>the "Hidden Galaxy."</strong> Its near face-on orientation and large angular extent, however, make it one of the best-resolved nearby galaxies for studying the fine structure of a large-scale galactic magnetic field.</p>
+    <p style="margin-top:16px;">This paper extends the <strong>Bayesian Fourier-mode framework</strong> developed for M31 to IC 342, combining VLA and Effelsberg radio polarisation data to trace the galaxy's regular magnetic field continuously from its nuclear bar out to the edge of its star-forming disk.</p>
+  </div>
+</section>
+
+<section id="stats">
+  <div class="wrap">
+    <span class="eyebrow">Why IC 342</span>
+    <div class="stat-grid">
+      <div class="stat"><span class="num">3.5 Mpc</span><span class="lbl">Distance</span></div>
+      <div class="stat"><span class="num">31°</span><span class="lbl">Inclination</span></div>
+      <div class="stat"><span class="num">0.25–17.5 kpc</span><span class="lbl">Radii studied</span></div>
+      <div class="stat"><span class="num">Few μG</span><span class="lbl">Field strength</span></div>
+    </div>
+    <p style="color:var(--fg-muted); font-size:0.9rem; margin-top:18px;">IC 342 is classified as an SAB(rs)cd-type spiral, with a flat rotation curve of ~170 km/s out to at least 42 kpc. Its near face-on geometry gives an unusually clean view of the galaxy's spiral structure, from its bar-fed nucleus to its outer star-forming disk.</p>
+  </div>
+</section>
+
+<section id="data">
+  <div class="wrap">
+    <span class="eyebrow">Observational data</span>
+    <h2 style="font-size:1.6rem; margin-bottom:16px;">Two telescopes, matched to two regions</h2>
+    <p style="color:var(--fg-muted); font-size:0.92rem;">The central, bar-fed nucleus and the extended outer disk demand different angular resolutions — so this analysis pairs high-resolution VLA data for the core with wide-field Effelsberg data for the disk, spanning four wavelengths in total.</p>
+    <table>
+      <thead>
+        <tr><th>Wavelength</th><th>Telescope</th><th>Region</th><th>Radii covered</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="mono">3.6 cm</td><td>VLA</td><td>Central</td><td>0.25–2.25 kpc</td></tr>
+        <tr><td class="mono">6.3 cm</td><td>VLA</td><td>Central</td><td>0.25–2.25 kpc</td></tr>
+        <tr><td class="mono">6.18 cm</td><td>Effelsberg</td><td>Outer disk</td><td>2.5–17.5 kpc</td></tr>
+        <tr><td class="mono">11.2 cm</td><td>Effelsberg</td><td>Outer disk</td><td>2.5–17.5 kpc</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="method">
+  <div class="wrap">
+    <span class="eyebrow">Method</span>
+    <h2 style="font-size:1.6rem; margin-bottom:8px;">Extending the Bayesian framework to a new galaxy</h2>
+    <div class="step">
+      <div class="step-num mono">01</div>
+      <div>
+        <h3>Same Fourier framework, new geometry</h3>
+        <p>The Bayesian Fourier-mode analysis developed for M31 (Chapter 3) is applied to IC 342's very different geometry — a near face-on, barred spiral — modelling the azimuthal variation of polarisation angle in each radial ring as a superposition of Fourier modes.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num mono">02</div>
+      <div>
+        <h3>Bayesian model selection, ring by ring</h3>
+        <p>Rather than assuming a fixed set of Fourier modes everywhere, Bayesian model selection determines — independently for each radial ring — exactly which combination of modes is actually required to explain the data.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num mono">03</div>
+      <div>
+        <h3>Handling a poorly constrained foreground</h3>
+        <p>In the central region, the foreground Galactic rotation measure was found to be poorly constrained and strongly correlated with other parameters. Fixing it to the average value from the outer rings removed these unphysical correlations and yielded well-constrained fits.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="results">
+  <div class="wrap">
+    <span class="eyebrow">Results</span>
+    <h2 style="font-size:1.6rem; margin-bottom:20px;">A classic axisymmetric field — with a bar-driven twist at the centre</h2>
+    <div class="pull">"The regular magnetic field of IC 342 is dominated by the axisymmetric mode across almost the entire radial range studied — confirming its original identification as a clean example of an axisymmetric spiral field."</div>
+    <ul class="result-list">
+      <li>The field is <strong>axisymmetric (m = 0) across most of the disk</strong>, but an additional bisymmetric (m = 1) mode is required in the two outermost rings (7.5–17.5 kpc), and a quadrisymmetric (m = 2) mode appears in the innermost ring, coincident with the <strong>nuclear bar</strong>.</li>
+      <li>The magnetic pitch angle <strong>decreases steadily with radius</strong> across the outer disk — from −29° at 2.5–7.5 kpc to −18° at 12.5–17.5 kpc — in good agreement with earlier single-frequency estimates.</li>
+      <li>The innermost ring shows a <strong>remarkably steeper pitch angle</strong> (−45°), suggesting the dynamo's α-effect dominates locally over the Ω-effect in the bar region, likely driven by non-circular gas flows.</li>
+      <li>Converting fitted amplitudes to physical units gives regular field strengths of <strong>order a few μG throughout the disk</strong>, comparable in the nuclear bar and outer disk, but notably weaker and less well constrained in the 2.5–7.5 kpc ring.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="significance">
+  <div class="wrap">
+    <span class="eyebrow">Why it matters</span>
+    <h2 style="font-size:1.6rem; margin-bottom:16px;">A second galaxy, the same methodology</h2>
+    <p style="color:var(--fg-muted); font-size:0.98rem;">IC 342 is the <strong style="color:var(--fg);">second galaxy</strong> analysed with the Bayesian Fourier-mode framework introduced for M31, and the two results together show the method holds up across very different galactic environments — from M31's gentle axisymmetric spiral to IC 342's barred, near face-on disk. Comparing the two builds toward a <strong style="color:var(--fg);">statistically consistent picture</strong> of how magnetic fields are structured across nearby spiral galaxies more broadly.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span class="eyebrow">Continue reading</span>
+    <p>This manuscript is currently in preparation. The full analysis — including the complete radial breakdown, model-selection diagnostics, and extended discussion of pitch-angle variation — is available in Chapter 4 of my Ph.D. thesis.</p>
+    <div class="foot-cta">
+      <a class="btn" href="indrajit-paul-website.html#publications">← Back to publications</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
