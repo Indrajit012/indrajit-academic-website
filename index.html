@@ -312,7 +312,7 @@
   .list-plain li:last-child{border-bottom:none;}
   .skill-row{margin-bottom:16px;}
   .skill-row .label{
-    display:flex; justify-content:space-between;
+    display:flex; justify-space-between;
     font-family:'IBM Plex Mono', monospace;
     font-size:0.78rem;
     color:var(--fg-muted);
@@ -614,17 +614,29 @@
         <span class="chip">MCMC sampling</span>
         <span class="chip">PSF photometry</span>
       </div>
-      <div class="chip-row" aria-label="Tools">
+      <div class="chip-row" aria-label="Tools" style="margin-bottom:36px;">
         <span class="chip">CASA</span>
-        <span class="chip">AIPS</span>
         <span class="chip">LaTeX</span>
         <span class="chip">Git</span>
       </div>
-      <div class="chip-row" aria-label="Languages spoken">
-        <span class="chip">Bengali (native)</span>
-        <span class="chip">English</span>
-        <span class="chip">Hindi</span>
-      </div>
+
+      <!-- SEPARATE LANGUAGES SUBSECTION -->
+      <span class="eyebrow">Communication</span>
+      <h3 style="font-family:'Inter', sans-serif; font-size:1.2rem; margin-bottom:16px; color:var(--fg);">Languages</h3>
+      <ul class="list-plain">
+        <li style="display:flex; justify-content:space-between; align-items:center;">
+          <strong style="color:var(--fg);">Bengali</strong>
+          <span class="mono" style="font-size:0.78rem; color:var(--field-gold);">Native</span>
+        </li>
+        <li style="display:flex; justify-content:space-between; align-items:center;">
+          <strong style="color:var(--fg);">English</strong>
+          <span class="mono" style="font-size:0.78rem; color:var(--field-accent);">Fluent</span>
+        </li>
+        <li style="display:flex; justify-content:space-between; align-items:center;">
+          <strong style="color:var(--fg);">Hindi</strong>
+          <span class="mono" style="font-size:0.78rem; color:var(--fg-muted);">Fluent</span>
+        </li>
+      </ul>
     </div>
   </div>
 </section>
