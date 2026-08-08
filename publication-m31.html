@@ -79,6 +79,22 @@
   .btn.primary{background:var(--field-accent); border-color:var(--field-accent); color:var(--ink); font-weight:500;}
   .btn.primary:hover{background:#e6cda0;}
 
+  /* FIGURES */
+  .figure-block{margin:28px 0;}
+  .figure-block img{
+    width:100%; display:block;
+    border-radius:4px;
+    border:1px solid var(--line);
+    background:#fff;
+  }
+  .figure-caption{
+    font-size:0.82rem;
+    color:var(--fg-muted);
+    margin-top:10px;
+    line-height:1.55;
+  }
+  .figure-caption strong{color:var(--fg); font-weight:600;}
+
   /* ABSTRACT */
   #abstract p{color:var(--fg-muted); font-size:1.03rem;}
   #abstract p strong{color:var(--fg); font-weight:600;}
@@ -189,8 +205,12 @@
   <div class="wrap">
     <span class="eyebrow">Overview</span>
     <h2 style="font-size:1.6rem; margin-bottom:20px;">Reading a galaxy's magnetism from its polarised light</h2>
-    <p>Magnetic fields are woven through the Universe at every scale — from the Earth's core to the diffuse gas between galaxies. On galactic scales, <strong>spiral galaxies like the Milky Way and M31 host coherent magnetic fields of a few microgauss</strong>, threading tens of kiloparsecs across their disks. Though far weaker than the fields around stars or planets, their energy is comparable to that of turbulent gas and cosmic rays — making them a genuinely dynamical ingredient of a galaxy's structure, not just a passive trace.</p>
-    <p style="margin-top:16px;">This paper focuses on <strong>M31, the Andromeda Galaxy</strong> — the nearest large spiral to our own, and the closest well-resolved laboratory we have for testing how these galactic-scale magnetic fields are generated and shaped. We revisit its magnetic field using a <strong>Bayesian Monte Carlo fitting approach</strong>, extending the classical Fourier-mode picture of the field to higher order and placing it on a statistically rigorous footing for the first time.</p>
+    <p>Spiral galaxies like the Milky Way and M31 host coherent magnetic fields of a few microgauss, threading tens of kiloparsecs across their disks — dynamically significant, not just a passive trace. This paper revisits the field of <strong>M31, the Andromeda Galaxy</strong> — our closest well-resolved laboratory for galactic magnetism — using a <strong>Bayesian Monte Carlo fitting approach</strong> that extends the classical Fourier-mode picture to higher order.</p>
+
+    <div class="figure-block">
+      <img src="m31-figure.jpg" alt="Multi-wavelength composite image of M31 showing optical, infrared, X-ray, and combined views">
+      <p class="figure-caption"><strong>M31 across the spectrum.</strong> Optical, infrared, X-ray, and composite views of the Andromeda Galaxy. The infrared and X-ray emission trace the star-forming spiral structure and hot gas that thread the same disk this work maps in polarised radio light.</p>
+    </div>
   </div>
 </section>
 
@@ -260,7 +280,7 @@
       <div class="step-num mono">04</div>
       <div>
         <h3>MCMC sampling with Cobaya</h3>
-        <p>The posterior is sampled using the Metropolis–Hastings Markov Chain Monte Carlo algorithm, implemented via the Python package <em>Cobaya</em>. Independent chains run until the Gelman–Rubin convergence statistic satisfies R − 1 &lt; 0.01, or up to a maximum of 10⁶ samples, with the first 30% of each chain discarded as burn-in.</p>
+        <p>The posterior is sampled with Metropolis–Hastings MCMC via the Python package <em>Cobaya</em>, run until Gelman–Rubin R − 1 &lt; 0.01 (or 10⁶ samples), discarding the first 30% of each chain as burn-in.</p>
       </div>
     </div>
 
@@ -268,7 +288,7 @@
       <div class="step-num mono">05</div>
       <div>
         <h3>Choosing how many modes to keep</h3>
-        <p>Models of increasing complexity are compared using both their maximum likelihood and their Bayesian complexity, C = ⟨χ²⟩ − χ²(α̂) — a measure of how many parameters the data actually constrain. A more complex model is only preferred if it meaningfully improves the likelihood; otherwise the simpler model wins, guarding against over-fitting.</p>
+        <p>Models are compared on both maximum likelihood and Bayesian complexity, C = ⟨χ²⟩ − χ²(α̂) — a more complex model only wins if it meaningfully improves the fit, guarding against over-fitting.</p>
       </div>
     </div>
 
@@ -276,7 +296,7 @@
       <div class="step-num mono">06</div>
       <div>
         <h3>Validated on simulated data first</h3>
-        <p>Before touching the real data, the entire pipeline is tested on synthetic polarisation angles built from known input fields — a pure axisymmetric (m = 0) case, and a more complex superposition of m = 0–3 modes. In both cases, the MCMC recovers the true input parameters to within their fitted uncertainties, and the complexity diagnostic correctly flags the point beyond which adding more modes stops helping.</p>
+        <p>Before touching real data, the pipeline is tested on synthetic polarisation angles from known input fields. It recovers the true parameters within their fitted uncertainties in every case.</p>
       </div>
     </div>
 
@@ -286,6 +306,11 @@
       <div class="stat"><span class="num">10⁶</span><span class="lbl">Max. MCMC samples</span></div>
       <div class="stat"><span class="num">4</span><span class="lbl">Radial rings fitted</span></div>
     </div>
+
+    <div class="figure-block">
+      <img src="corner-plot.jpg" alt="Corner plot showing posterior distributions of the model parameters for the 6-8 kpc radial ring">
+      <p class="figure-caption"><strong>The posterior, laid bare.</strong> Diagonal panels show each parameter's 1D marginalised posterior; off-diagonal panels show 2D posteriors with 1σ/2σ contours (6–8 kpc ring). Blue: all four wavelengths; red: 3.59+6.18 cm only. Isolated, unimodal peaks — no elongated or split contours — confirm the chains converge cleanly with only weak parameter correlations.</p>
+    </div>
   </div>
 </section>
 
@@ -294,12 +319,55 @@
     <span class="eyebrow">Results</span>
     <h2 style="font-size:1.6rem; margin-bottom:20px;">A predominantly axisymmetric field, with fine structure on top</h2>
     <div class="pull">"The regular magnetic field of M31 is predominantly axisymmetric, with a coherent trailing spiral geometry consistent with mean-field dynamo theory."</div>
+
+    <div class="stat-grid" style="margin-top:8px; margin-bottom:28px;">
+      <div class="stat"><span class="num">1.7–2.7 μG</span><span class="lbl">Regular field strength</span></div>
+      <div class="stat"><span class="num">−15° ± 2°</span><span class="lbl">Pitch angle (m=0)</span></div>
+      <div class="stat"><span class="num">&gt;2×</span><span class="lbl">m=0 vs. higher modes</span></div>
+      <div class="stat"><span class="num">10–12 kpc</span><span class="lbl">Field strength peak</span></div>
+    </div>
+
+    <div class="figure-block">
+      <img src="fig320-321-merged.jpg" alt="Observed and fitted polarisation angles versus azimuthal angle for all four radial rings and four wavelengths">
+      <p class="figure-caption"><strong>Model vs. data, ring by ring.</strong> Observed (points) and fitted (solid line) polarisation angles across all four radial rings — 6–8, 8–10 (top block) and 10–12, 12–14 kpc (bottom block) — at all four wavelengths. The grey dashed line is the m = 0 mode alone; the gap to the solid line is exactly the higher-order-mode contribution. Red points were excluded as outliers.</p>
+    </div>
+
     <ul class="result-list">
-      <li>MCMC chains <strong>converge to unique, well-defined solutions</strong> for every radial ring (Gelman–Rubin R − 1 &lt; 0.01), with no significant degeneracies between parameters.</li>
-      <li>Normalised residuals between observed and modelled polarisation angles stay close to <strong>1σ or better across all four rings</strong> (RMS values of 1.10, 0.99, 0.87, 0.81), showing the model captures the dominant field structure well.</li>
-      <li>Higher-order Fourier modes (m = 1–4) are needed to reproduce <strong>localised departures from axial symmetry</strong> — but remain comparatively weak, likely tracing local perturbations rather than independent dynamo modes.</li>
-      <li>The magnetic field strength inferred independently from Faraday rotation measures is <strong>consistent with recent literature</strong>, offering a more direct estimate of the coherent field than polarised-intensity methods alone.</li>
+      <li><strong>Field strength:</strong> ~1.7 μG across most of the disk, rising to <strong>~2.7 μG in the outermost ring</strong> — lower than earlier polarised-intensity estimates, for good reason (see below).</li>
+      <li><strong>Pitch angle:</strong> stays close to <strong>p₀ ≈ −15° ± 2°</strong> across almost the entire radius — the near-constancy is itself a dynamo signature.</li>
+      <li><strong>m = 0 dominates everywhere:</strong> its amplitude exceeds every higher-order mode by more than 2× in each ring; total field strength and pitch angle track it almost exactly.</li>
+      <li><strong>Higher-order modes trace local disturbances:</strong> their pitch angles show no radial trend. The m = 1 mode peaks near θ ≈ 20°–50°, plausibly linked to a field gap near θ≈149°, r≈10 kpc — where <strong>M32 may have passed through the disk</strong>.</li>
+      <li><strong>Independent check:</strong> the model's Faraday rotation-measure predictions match those computed directly from the data, confirming the geometry isn't a depolarisation artefact.</li>
     </ul>
+  </div>
+</section>
+
+<section id="comparison">
+  <div class="wrap">
+    <span class="eyebrow">Comparison with earlier work</span>
+    <h2 style="font-size:1.6rem; margin-bottom:16px;">Why this analysis goes further than Fletcher et al. (2004)</h2>
+    <p style="color:var(--fg-muted); font-size:0.95rem; margin-bottom:20px;">The classic reference for M31's magnetic field is Fletcher et al. (2004). This work improves on it in three concrete ways:</p>
+    <div class="step">
+      <div class="step-num mono">01</div>
+      <div>
+        <h3>Newer, more sensitive data</h3>
+        <p>The 3.59, 6.18, and 11.33 cm observations used here (Beck et al. 2020) span 2001–2012 and have substantially lower noise than the data available to Fletcher et al. (2004), simply due to advances in receiver technology over the intervening years — the same physical field, measured with a sharper instrument.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num mono">02</div>
+      <div>
+        <h3>Bayesian inference instead of residual minimisation</h3>
+        <p>Earlier studies — including Sokoloff et al. (1992), Berkhuijsen et al. (1997), and Fletcher et al. (2004) itself — relied on χ² residual minimisation, which is inefficient in this highly multimodal, correlated parameter space, sensitive to the initial guess, and gives no honest handle on parameter uncertainty. The Bayesian MCMC approach used here explores the full posterior directly, yielding both best-fit values and statistically meaningful uncertainties and correlations.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num mono">03</div>
+      <div>
+        <h3>A field strength that measures the right thing</h3>
+        <p>Fletcher et al. (2004) derived field strength from polarised synchrotron <em>intensity</em>, which is sensitive to both the coherent regular field <em>and</em> the anisotropic turbulent field — inflating the inferred strength. This work instead derives field strength from <strong>Faraday rotation</strong>, which responds only to the coherent line-of-sight field, giving a more representative ~1.7–2.7 μG rather than the higher values intensity-based methods report. The result agrees closely with the independent rotation-measure analysis of Beck & Berkhuijsen (2025).</p>
+      </div>
+    </div>
   </div>
 </section>
 
